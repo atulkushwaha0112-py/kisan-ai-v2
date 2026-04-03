@@ -6,3 +6,6 @@ python-multipart==0.0.9
 geopy
 requests
 gunicorn
+pandas
+numpy
+scikit-learn

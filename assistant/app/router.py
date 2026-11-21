@@ -37,7 +37,7 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 router = APIRouter()
 
 # ── Ollama Config ──────────────────────────────────────────────────────────────
-CLOUD_KEY   = os.getenv("OLLAMA_CLOUD_KEY", "4ef5f111adcc4d5da56cdb9847927b33.6Wv_694o5MQGUJnpS0IRUW5d")
+CLOUD_KEY   = os.getenv("OLLAMA_API_KEY", "").strip()
 CLOUD_URL   = "https://ollama.com/v1/chat/completions"
 CLOUD_MODEL = "gemma3:12b"
 OLLAMA_CHAT = CLOUD_URL  # for backward compatibility, but using cloud

@@ -1,15 +1,16 @@
 """
 manage_lands/utils.py  — v2 (accurate, deterministic, stage-aware)
 """
+import os
 import json
 import requests
 from datetime import datetime, timedelta
 from pathlib import Path
 
-WEATHER_API_KEY = "21cf7dce8403e3bac30aef6d7bda0a4c"
+WEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "").strip()
 OLLAMA_URL      = "https://ollama.com/v1/chat/completions"
 MODEL           = "gemma3:12b"
-CLOUD_KEY       = "4ef5f111adcc4d5da56cdb9847927b33.6Wv_694o5MQGUJnpS0IRUW5d"
+CLOUD_KEY       = os.getenv("OLLAMA_API_KEY", "").strip()
 LANDS_FILE      = Path(__file__).parent / "data" / "lands.json"
 LANDS_FILE.parent.mkdir(parents=True, exist_ok=True)
 
@@ -43,6 +44,8 @@ def delete_land(land_id: str):
 # ── Weather ────────────────────────────────────────────────────────────────────
 def get_live_weather_forecast(api_key: str = WEATHER_API_KEY) -> dict:
     try:
+        if not api_key:
+            return {"error": "OPENWEATHER_API_KEY is not configured", "city": "Unknown", "forecast": []}
         geo      = requests.get("https://ipinfo.io/json", timeout=5).json()
         lat, lon = geo["loc"].split(",")
         city     = geo.get("city", "Unknown")

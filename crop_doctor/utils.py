@@ -3,9 +3,10 @@ crop_doctor/utils.py
 """
 
 import base64
+import os
 import requests
 
-PLANT_ID_KEY = "MulWGVXHjpx8t6h0dLb4iWDDpf8E938goZVEPCVESWYboPxkm6"
+PLANT_ID_KEY = os.getenv("PLANT_ID_API_KEY", "").strip()
 PLANT_ID_URL = "https://api.plant.id/v3/health_assessment"
 
 OLLAMA_URL = "https://ollama.com/v1/chat/completions"
@@ -14,6 +15,12 @@ MODEL      = "gemma3:12b"
 
 def detect_disease(image_bytes: bytes) -> dict:
     try:
+        if not PLANT_ID_KEY:
+            return {
+                "healthy": False, "disease_name": None, "probability": None,
+                "description": None, "suggestions": [], "raw": None,
+                "error": "PLANT_ID_API_KEY is not configured",
+            }
         b64 = base64.b64encode(image_bytes).decode("utf-8")
 
         payload = {

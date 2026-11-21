@@ -10,3 +10,7 @@ build/
 .vscode/
 *.log
 .DS_Store
+
+# Local secrets and environment files
+.env.*
+!.env.example

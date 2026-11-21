@@ -3,6 +3,7 @@ mandi_prices/utils.py
 All business logic extracted from the standalone mandi.py script.
 """
 
+import os
 import re
 import requests
 import pandas as pd
@@ -10,7 +11,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from geopy.distance import geodesic
 
-API_KEY     = "579b464db66ec23bdd000001bdccc21bf0eb426f7bcfb88428e0475f"
+API_KEY     = os.getenv("DATA_GOV_IN_API_KEY", "").strip()
 RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070"
 
 HINDI_MAP = {

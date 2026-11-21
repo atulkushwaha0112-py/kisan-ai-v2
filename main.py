@@ -8,6 +8,7 @@ The Kisan AI assistant is mounted at /assistant
 The beautiful farmer dashboard is served at /
 """
 
+import os
 import json
 import asyncio
 from fastapi import FastAPI, Request
@@ -18,6 +19,9 @@ from pathlib import Path
 from typing import AsyncGenerator
 import httpx
 import uvicorn
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ── Import routers ─────────────────────────────────────────────────────────────
 from assistant.app.router  import router as assistant_router
@@ -54,13 +58,16 @@ app.include_router(videos_router,    prefix="/videos",       tags=["Videos"])
 
 # ── Dashboard chat proxy (avoids CORS issues on Render) ────────────────────────
 CLOUD_URL   = "https://ollama.com/v1/chat/completions"
-CLOUD_KEY   = "4ef5f111adcc4d5da56cdb9847927b33.6Wv_694o5MQGUJnpS0IRUW5d"
+CLOUD_KEY   = os.getenv("OLLAMA_API_KEY", "").strip()
 CLOUD_MODEL = "gemma3:12b"
 
 @app.post("/api/dashboard-chat")
 async def dashboard_chat(request: Request):
     body = await request.json()
     messages = body.get("messages", [])
+
+    if not CLOUD_KEY:
+        return {"error": "OLLAMA_API_KEY is not configured"}
 
     try:
         async with httpx.AsyncClient(timeout=60) as client:
